@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Academy</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Kursnavigation">
+        <div class="brand">
+          <img class="brand-logo" src="./xlent-logo.png" alt="XLENT">
+          <div>
+            <p class="brand-kicker">Utbildning</p>
+            <h1>AI Academy</h1>
+          </div>
+        </div>
+
+        <section class="progress-panel" aria-label="Progress">
+          <div class="progress-label">
+            <span>Progress</span>
+            <strong id="progressCount">0 av 24</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+        </section>
+
+        <button id="homeButton" class="home-button is-active" type="button">
+          <span>Information och översikt</span>
+        </button>
+
+        <div class="toolbar" aria-label="Filter">
+          <button class="filter-button is-active" type="button" data-filter="all">Alla</button>
+          <button class="filter-button" type="button" data-filter="remaining">Kvar</button>
+          <button class="filter-button" type="button" data-filter="done">Klara</button>
+        </div>
+
+        <nav id="moduleNav" class="module-nav"></nav>
+      </aside>
+
+      <main class="content">
+        <button id="menuButton" class="icon-button" type="button" aria-label="Visa moduler">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <header id="topbar" class="topbar">
+          <div>
+            <p class="eyebrow">Utbildning</p>
+            <h2>AI i det dagliga arbetet</h2>
+          </div>
+        </header>
+
+        <section id="overview" class="overview" aria-labelledby="overviewTitle">
+          <div class="overview-copy">
+            <p class="eyebrow">24 moduler, 5 områden</p>
+            <h2 id="overviewTitle">Lär dig använda AI i arbetet</h2>
+            <p>
+              Många använder AI som ett frågeverktyg, men får störst värde när det blir en del av själva arbetet:
+              som stöd för analys, skrivande, struktur, uppföljning och automatisering.
+            </p>
+            <p>
+              Målet är att du ska kunna välja bättre uppgifter för AI, ge tydligare kontext och bygga arbetssätt
+              som går att återanvända istället för att börja om varje gång. Syftet är praktisk förändring:
+              att göra det lättare att testa, förbättra och stegvis integrera AI i arbetsflöden som redan finns.
+            </p>
+          </div>
+          <div class="overview-stats" aria-label="Sammanfattning">
+            <div>
+              <strong id="totalMinutes">0</strong>
+              <span>samlad lästid</span>
+            </div>
+            <div>
+              <strong>3</strong>
+              <span>steg från grund till fördjupning</span>
+            </div>
+            <div>
+              <strong>Fritt</strong>
+              <span>välj ordning efter behov</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="categoryGrid" class="category-grid" aria-label="Kategorier"></section>
+
+        <article id="reader" class="reader" tabindex="-1" hidden>
+          <div class="reader-header">
+            <div>
+              <p id="readerMeta" class="eyebrow"></p>
+              <h2 id="readerTitle"></h2>
+            </div>
+            <button id="completeButton" class="primary-button" type="button">Markera som genomförd</button>
+          </div>
+          <div id="readerTags" class="tag-row"></div>
+          <div id="readerBody" class="markdown-body"></div>
+          <div class="reader-footer">
+            <button id="completeButtonBottom" class="primary-button" type="button">Markera som genomförd</button>
+          </div>
+        </article>
+      </main>
+    </div>
+
+    <div id="backdrop" class="backdrop" hidden></div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

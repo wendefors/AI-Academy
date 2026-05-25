@@ -1,0 +1,10 @@
+{
+  "name": "ai-academy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/preview-server.mjs",
+    "build": "node --check app.js && node --check scripts/preview-server.mjs"
+  }
+}

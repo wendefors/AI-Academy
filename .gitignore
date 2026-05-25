@@ -1,0 +1,8 @@
+project-context.md
+current-state.md
+project-memory/project-context.md
+project-memory/current-state.md
+project-memory/prompts/local/
+*.local.md
+.DS_Store
+node_modules/
