@@ -22,7 +22,12 @@ const moduleFiles = [
   "modules/05-agents-och-mcp/5.2-verktyg-och-modeller.md",
   "modules/05-agents-och-mcp/5.3-ai-med-tillgang-till-varlden.md",
   "modules/05-agents-och-mcp/5.4-agentiska-workflows.md",
-  "modules/05-agents-och-mcp/5.5-framtidens-kunskapsarbete.md"
+  "modules/05-agents-och-mcp/5.5-framtidens-kunskapsarbete.md",
+  "modules/06-verktyg-i-praktiken/6.1-konversation-i-praktiken.md",
+  "modules/06-verktyg-i-praktiken/6.2-dokument-och-research-i-praktiken.md",
+  "modules/06-verktyg-i-praktiken/6.3-agentlagen-i-praktiken.md",
+  "modules/06-verktyg-i-praktiken/6.4-organisationsintegrationer-i-praktiken.md",
+  "modules/06-verktyg-i-praktiken/6.5-bygga-och-koda-i-praktiken.md"
 ];
 
 const categoryInfo = {
@@ -45,6 +50,10 @@ const categoryInfo = {
   "agenter-och-system": {
     title: "Agenter, MCP och system",
     summary: "Förstå verktygsanrop, integrationer och mer agentiska arbetssätt."
+  },
+  "verktyg-i-praktiken": {
+    title: "Verktyg i praktiken",
+    summary: "Koppla utbildningens arbetssätt till konkreta AI-verktyg och praktisk användning."
   }
 };
 
@@ -65,6 +74,7 @@ const elements = {
   nav: document.querySelector("#moduleNav"),
   categoryGrid: document.querySelector("#categoryGrid"),
   overview: document.querySelector("#overview"),
+  overviewCount: document.querySelector("#overviewCount"),
   topbar: document.querySelector("#topbar"),
   reader: document.querySelector("#reader"),
   readerTitle: document.querySelector("#readerTitle"),
@@ -160,6 +170,8 @@ function render() {
   renderNav();
   renderCategories();
   const totalMinutes = state.modules.reduce((sum, module) => sum + module.minutes, 0);
+  const totalCategories = Object.keys(groupByCategory(state.modules)).length;
+  elements.overviewCount.textContent = `${state.modules.length} moduler, ${totalCategories} områden`;
   elements.totalMinutes.textContent = formatDuration(totalMinutes);
 }
 
