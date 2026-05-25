@@ -248,7 +248,6 @@ function renderCategories() {
     button.className = "category-card";
     button.innerHTML = `
       <div>
-        <p class="eyebrow">${modules.length} moduler</p>
         <h3>${escapeHtml(info.title)}</h3>
         <p>${escapeHtml(info.summary)}</p>
       </div>
