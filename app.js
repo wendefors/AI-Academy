@@ -67,6 +67,7 @@ const state = {
   modules: [],
   activeSlug: "",
   filter: "all",
+  query: "",
   completed: new Set(JSON.parse(localStorage.getItem("ai-academy-progress") || "[]"))
 };
 
@@ -86,6 +87,7 @@ const elements = {
   progressCount: document.querySelector("#progressCount"),
   progressBar: document.querySelector("#progressBar"),
   totalMinutes: document.querySelector("#totalMinutes"),
+  moduleSearch: document.querySelector("#moduleSearch"),
   menuButton: document.querySelector("#menuButton"),
   homeButton: document.querySelector("#homeButton"),
   backdrop: document.querySelector("#backdrop")
@@ -143,6 +145,11 @@ function bindEvents() {
     });
   });
 
+  elements.moduleSearch.addEventListener("input", () => {
+    state.query = elements.moduleSearch.value.trim().toLowerCase();
+    renderNav();
+  });
+
   elements.completeButton.addEventListener("click", toggleCompleted);
   elements.completeButtonBottom.addEventListener("click", toggleCompleted);
 
@@ -184,8 +191,17 @@ function renderProgress() {
 }
 
 function renderNav() {
-  const grouped = groupByCategory(filteredModules());
+  const modules = filteredModules();
+  const grouped = groupByCategory(modules);
   elements.nav.innerHTML = "";
+
+  if (!modules.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-nav";
+    empty.textContent = "Inga moduler matchar sökningen.";
+    elements.nav.append(empty);
+    return;
+  }
 
   Object.entries(grouped).forEach(([category, modules]) => {
     const section = document.createElement("section");
@@ -291,9 +307,25 @@ function updateCompleteButton() {
 }
 
 function filteredModules() {
-  if (state.filter === "done") return state.modules.filter((module) => state.completed.has(module.slug));
-  if (state.filter === "remaining") return state.modules.filter((module) => !state.completed.has(module.slug));
-  return state.modules;
+  return state.modules.filter((module) => {
+    const matchesStatus =
+      state.filter === "done"
+        ? state.completed.has(module.slug)
+        : state.filter === "remaining"
+          ? !state.completed.has(module.slug)
+          : true;
+
+    if (!matchesStatus) return false;
+    if (!state.query) return true;
+
+    const searchableText = [
+      module.title,
+      module.slug,
+      ...(Array.isArray(module.tags) ? module.tags : [])
+    ].join(" ").toLowerCase();
+
+    return searchableText.includes(state.query);
+  });
 }
 
 function groupByCategory(modules) {
