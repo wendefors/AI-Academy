@@ -95,9 +95,9 @@ async function init() {
 }
 
 async function loadModules() {
-  const loaded = await Promise.all(moduleFiles.map(async (path, index) => {
+  const results = await Promise.allSettled(moduleFiles.map(async (path, index) => {
     const response = await fetch(path);
-    if (!response.ok) throw new Error(`Kunde inte läsa ${path}`);
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const raw = await response.text();
     const { metadata, content } = parseFrontmatter(raw);
     return {
@@ -109,7 +109,17 @@ async function loadModules() {
     };
   }));
 
-  return loaded;
+  const failed = results
+    .map((result, index) => ({ result, path: moduleFiles[index] }))
+    .filter(({ result }) => result.status === "rejected");
+
+  if (failed.length) {
+    console.error("Kunde inte läsa alla moduler:", failed);
+  }
+
+  return results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value);
 }
 
 function bindEvents() {
