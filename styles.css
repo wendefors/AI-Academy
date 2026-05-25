@@ -136,27 +136,52 @@ button {
 }
 
 .home-button {
+  position: relative;
   width: 100%;
-  min-height: 44px;
+  min-height: 56px;
   margin-bottom: 14px;
-  padding: 11px 12px;
-  border: 1px solid var(--secondary);
+  padding: 12px 14px 12px 16px;
+  overflow: hidden;
+  border: 1px solid #ead9a8;
   border-radius: 8px;
-  background: #fff4d6;
+  background: #fff9ea;
   color: var(--ink);
-  font-weight: 800;
   text-align: left;
   cursor: pointer;
+  box-shadow: 0 8px 18px rgba(30, 32, 34, 0.05);
 }
 
-.home-button span {
+.home-button::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--primary);
+}
+
+.home-button-title,
+.home-button-meta {
   display: block;
+}
+
+.home-button-title {
+  font-size: 0.94rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.home-button-meta {
+  margin-top: 3px;
+  color: var(--secondary-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .home-button:hover,
 .home-button.is-active {
-  border-color: #d99500;
-  background: #ffe8ad;
+  border-color: #dfc36f;
+  background: #fff3cf;
+  box-shadow: 0 10px 22px rgba(30, 32, 34, 0.07);
 }
 
 .search-field {
