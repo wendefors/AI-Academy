@@ -1,3 +1,41 @@
+# Modulöversikt
+
+| # | Titel | Kapitel | Tid |
+|---|-------|---------|-----|
+| 1.1 | Från sökmotor till arbetsmotor | 01 — AI-first tankesätt | 7 min |
+| 1.2 | AI som kollega | 01 — AI-first tankesätt | 6 min |
+| 1.3 | Kontext är allt | 01 — AI-first tankesätt | 7 min |
+| 1.4 | Från dokument till system | 01 — AI-first tankesätt | 7 min |
+| 2.1 | Möten med AI | 02 — Arbetsflöden och produktivitet | 7 min |
+| 2.2 | Research och analys | 02 — Arbetsflöden och produktivitet | 7 min |
+| 2.3 | Skriv bättre snabbare | 02 — Arbetsflöden och produktivitet | 6 min |
+| 2.4 | Personliga workflows | 02 — Arbetsflöden och produktivitet | 9 min |
+| 2.5 | Automatisera små saker först | 02 — Arbetsflöden och produktivitet | 6 min |
+| 3.1 | Vad är en skill? | 03 — Skills och kontext | 7 min |
+| 3.2 | Från prompt till workflow | 03 — Skills och kontext | 9 min |
+| 3.3 | Markdown som AI-format | 03 — Skills och kontext | 7 min |
+| 3.4 | Bygg ett personligt kontextbibliotek | 03 — Skills och kontext | 9 min |
+| 3.5 | AI-minne utan minne | 03 — Skills och kontext | 9 min |
+| 4.1 | Du behöver inte vara utvecklare längre | 04 — Bygga med AI | 7 min |
+| 4.2 | Vibe coding | 04 — Bygga med AI | 9 min |
+| 4.3 | Bygg små interna verktyg | 04 — Bygga med AI | 9 min |
+| 4.4 | AI som gränssnitt | 04 — Bygga med AI | 11 min |
+| 4.5 | Från idé till fungerande prototyp | 04 — Bygga med AI | 11 min |
+| 5.1 | Vad är MCP? | 05 — Agenter, MCP och nästa lager | 9 min |
+| 5.2 | Verktyg och modeller | 05 — Agenter, MCP och nästa lager | 11 min |
+| 5.3 | AI med tillgång till världen | 05 — Agenter, MCP och nästa lager | 11 min |
+| 5.4 | Agentiska workflows | 05 — Agenter, MCP och nästa lager | 12 min |
+| 5.5 | Framtidens kunskapsarbete | 05 — Agenter, MCP och nästa lager | 9 min |
+| 6.1 | Konversation och tänkande i praktiken | 06 — Verktyg i praktiken | 7 min |
+| 6.2 | Dokument och research i praktiken | 06 — Verktyg i praktiken | 7 min |
+| 6.3 | Agentlägen i praktiken | 06 — Verktyg i praktiken | 9 min |
+| 6.4 | Organisationsintegrationer i praktiken | 06 — Verktyg i praktiken | 7 min |
+| 6.5 | Bygga och koda i praktiken | 06 — Verktyg i praktiken | 9 min |
+
+**29 moduler — totalt ca 241 min (4 timmar)**
+
+---
+
 ## Syfte
 
 AI Academy ska hjälpa människor att:
@@ -70,7 +108,7 @@ Fokus:
 
 ---
 
-# 01 — AI-first mindset
+# 01 — AI-first tankesätt
 
 ## Syfte
 
@@ -135,7 +173,7 @@ Bryta gamla mentala modeller kring kunskapsarbete och introducera AI som collabo
 
 ---
 
-# 02 — Workflows & productivity
+# 02 — Arbetsflöden och produktivitet
 
 ## Syfte
 
@@ -214,7 +252,7 @@ Skapa konkreta vardagsvinster snabbt och hjälpa människor automatisera delar a
 
 ---
 
-# 03 — Skills & context engineering
+# 03 — Skills och kontext
 
 ## Syfte
 
@@ -288,7 +326,7 @@ Lära människor skapa återanvändbara AI-förmågor och strukturera kontext p�
 
 ---
 
-# 04 — Building with AI
+# 04 — Bygga med AI
 
 ## Syfte
 
@@ -360,7 +398,7 @@ Få människor att börja skapa istället för att bara använda.
 
 ---
 
-# 05 — Agents, MCP & the next layer
+# 05 — Agenter, MCP och nästa lager
 
 ## Syfte
 
@@ -433,22 +471,80 @@ Visa vart utvecklingen är på väg och introducera mer agentiska arbetssätt.
 
 ---
 
-# 06 — Labs
+# 06 — Verktyg i praktiken
 
 ## Syfte
 
-Skapa verklig förändring genom praktisk användning.
+Hands-on genomgång av de fem verktygskategorierna från modul 2.6. En modul per kategori, med fokus på vad du konkret kan göra och hur du kommer igång.
 
-Labs ska:
-- vara verklighetsnära
-- använda deltagarens riktiga arbete
-- uppmuntra användning av LLM under själva arbetet
-- fokusera på experimentering och förbättring
+---
 
-Labs ska inte kännas som:
-- skoluppgifter
-- examination
-- certifiering
+## 6.1 — Konversation och tänkande i praktiken
+
+### Fokus
+- kontext och iteration
+- skrivande och analys
+- vad chat-läget faktiskt kan och inte kan
+- hur du formulerar uppgifter
+
+### Exempel på labbar
+- ta en faktisk arbetsuppgift och lös den med konversationsläget
+- iterera minst en gång med konkret feedback
+
+---
+
+## 6.2 — Dokument och research i praktiken
+
+### Fokus
+- arbeta med specifikt källmaterial
+- NotebookLM och Perplexity konkret
+- källhänvisning och faktakontroll
+- prioritera vad som är värt att läsa
+
+### Exempel på labbar
+- ladda in ett faktiskt dokument i NotebookLM och ställ tre frågor
+- använd Perplexity för en research-fråga och kontrollera källorna
+
+---
+
+## 6.3 — Agentlägen i praktiken
+
+### Fokus
+- skillnaden mellan att fråga och att delegera
+- Claude Cowork konkret
+- hur du formulerar mål, inte frågor
+- vad du fortfarande behöver göra
+
+### Exempel på labbar
+- delegera en flerstegsuppgift till ett agentläge
+- observera hur AI hanterar mellanlegen
+
+---
+
+## 6.4 — Organisationsintegrationer i praktiken
+
+### Fokus
+- Microsoft 365 Copilot i Teams, Outlook, Word, Excel
+- Copilot Studio för interna assistenter
+- beroende av organisationens licensbeslut
+- hur du tar nästa steg om det inte finns tillgängligt
+
+### Exempel på labbar
+- testa sammanfattning i Teams eller Outlook
+- eller: kartlägg och bygg ett case för aktivering
+
+---
+
+## 6.5 — Bygga och koda i praktiken
+
+### Fokus
+- VS Code med GitHub Copilot eller Continue
+- Claude Code terminalbaserat
+- scripts och automation utan att vara utvecklare
+- hur du itererar när det inte fungerar direkt
+
+### Exempel på labbar
+- bygg ett enkelt script för en manuell uppgift du gör regelbundet
 
 ---
 

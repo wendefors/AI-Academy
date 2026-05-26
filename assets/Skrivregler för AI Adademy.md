@@ -385,6 +385,25 @@ Undvik:
 
 ---
 
+# Efterkontroll
+
+## Språk- och grammatikgranskning
+
+Efter att moduler producerats ska en systematisk efterkontroll göras på samtliga filer. Granskningen ska fånga:
+
+- Stavfel och skrivfel (inklusive engelska stavningar av svenska ord)
+- Felaktiga verbformer (t.ex. "Listar" istället för "Lista" i instruktioner)
+- Felaktig kongruens (t.ex. "din klienter" istället för "dina klienter")
+- Engelska ord där svenska ska användas (t.ex. rubriker, begrepp som har en självklar svensk motsvarighet)
+- Felaktiga sammansättningar och foge-s (t.ex. "mötesammanfattning" istället för "mötessammanfattning")
+- Felaktiga prepositioner (t.ex. "lista av" istället för "lista över")
+- Påhittade ord som inte existerar i svenska (t.ex. "formateringsförlustring")
+- Felaktiga pronomen i fasta uttryck (t.ex. "Varje av dessa" istället för "Var och en av dessa")
+
+Kontrollen görs genom att läsa igenom samtliga moduler och åtgärda felen direkt i filerna.
+
+---
+
 # Viktigaste principen
 
 Materialet ska hjälpa människor att:
