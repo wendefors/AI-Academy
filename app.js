@@ -65,10 +65,14 @@ const levelInfo = {
 
 const state = {
   modules: [],
+  challenge: null,
+  challengePeriod: null,
   activeSlug: "",
+  activeChallengeSlug: "",
   filter: "all",
   query: "",
-  completed: new Set(JSON.parse(localStorage.getItem("ai-academy-progress") || "[]"))
+  completed: new Set(JSON.parse(localStorage.getItem("ai-academy-progress") || "[]")),
+  completedChallenges: new Set(JSON.parse(localStorage.getItem("ai-academy-challenge-progress") || "[]"))
 };
 
 const elements = {
@@ -82,26 +86,36 @@ const elements = {
   readerMeta: document.querySelector("#readerMeta"),
   readerTags: document.querySelector("#readerTags"),
   readerBody: document.querySelector("#readerBody"),
+  challengeReader: document.querySelector("#challengeReader"),
+  challengeTitle: document.querySelector("#challengeTitle"),
+  challengeMeta: document.querySelector("#challengeMeta"),
+  challengeTags: document.querySelector("#challengeTags"),
+  challengeBody: document.querySelector("#challengeBody"),
   completeButton: document.querySelector("#completeButton"),
   completeButtonBottom: document.querySelector("#completeButtonBottom"),
+  challengeCompleteButton: document.querySelector("#challengeCompleteButton"),
   progressCount: document.querySelector("#progressCount"),
   progressBar: document.querySelector("#progressBar"),
   totalMinutes: document.querySelector("#totalMinutes"),
   moduleSearch: document.querySelector("#moduleSearch"),
   menuButton: document.querySelector("#menuButton"),
   homeButton: document.querySelector("#homeButton"),
+  challengeButton: document.querySelector("#challengeButton"),
+  challengeButtonMeta: document.querySelector("#challengeButtonMeta"),
   backdrop: document.querySelector("#backdrop")
 };
 
 init();
 
 async function init() {
-  state.modules = await loadModules();
+  [state.modules, state.challenge] = await Promise.all([loadModules(), loadCurrentChallenge()]);
   render();
   bindEvents();
 
   const requestedSlug = window.location.hash.replace("#", "");
-  if (requestedSlug && state.modules.some((module) => module.slug === requestedSlug)) {
+  if (requestedSlug === "veckans-utmaning") {
+    openChallenge(false);
+  } else if (requestedSlug && state.modules.some((module) => module.slug === requestedSlug)) {
     openModule(requestedSlug, false);
   }
 }
@@ -134,6 +148,34 @@ async function loadModules() {
     .map((result) => result.value);
 }
 
+async function loadCurrentChallenge() {
+  const period = getActiveChallengePeriod();
+  state.challengePeriod = period;
+
+  for (const path of getChallengeCandidatePaths(period.week)) {
+    const response = await fetch(path);
+    if (response.ok) {
+      const raw = await response.text();
+      const { metadata, content } = parseFrontmatter(raw);
+      return {
+        ...metadata,
+        path,
+        content,
+        week: period.week,
+        year: period.year,
+        slug: metadata.slug || `vecka-${period.weekPadded}`,
+        tags: Array.isArray(metadata.tags) ? metadata.tags : []
+      };
+    }
+
+    if (response.status !== 404) {
+      console.error(`Kunde inte läsa veckans utmaning från ${path}: ${response.status} ${response.statusText}`);
+    }
+  }
+
+  return null;
+}
+
 function bindEvents() {
   document.querySelectorAll(".filter-button").forEach((button) => {
     button.addEventListener("click", () => {
@@ -152,9 +194,11 @@ function bindEvents() {
 
   elements.completeButton.addEventListener("click", toggleCompleted);
   elements.completeButtonBottom.addEventListener("click", toggleCompleted);
+  elements.challengeCompleteButton.addEventListener("click", toggleChallengeCompleted);
 
   elements.menuButton.addEventListener("click", openMenu);
   elements.homeButton.addEventListener("click", openHome);
+  elements.challengeButton.addEventListener("click", () => openChallenge());
   elements.backdrop.addEventListener("click", closeMenu);
 }
 
@@ -172,14 +216,41 @@ function toggleCompleted() {
     updateCompleteButton();
 }
 
+function toggleChallengeCompleted() {
+  const slug = state.activeChallengeSlug || getCurrentChallengeSlug();
+  if (state.completedChallenges.has(slug)) {
+    state.completedChallenges.delete(slug);
+  } else {
+    state.completedChallenges.add(slug);
+  }
+  persistChallengeProgress();
+  updateChallengeCompleteButton();
+  renderChallengeButton();
+}
+
 function render() {
   renderProgress();
+  renderChallengeButton();
   renderNav();
   renderCategories();
   const totalMinutes = state.modules.reduce((sum, module) => sum + module.minutes, 0);
   const totalCategories = Object.keys(groupByCategory(state.modules)).length;
   elements.overviewCount.textContent = `${state.modules.length} moduler, ${totalCategories} områden`;
   elements.totalMinutes.textContent = formatDuration(totalMinutes);
+}
+
+function renderChallengeButton() {
+  const challenge = getCurrentChallenge();
+  const slug = getCurrentChallengeSlug();
+  const done = state.completedChallenges.has(slug);
+
+  elements.challengeButton.classList.toggle("is-active", state.activeChallengeSlug === slug);
+  elements.challengeButton.classList.toggle("is-done", done);
+  elements.challengeButtonMeta.textContent = done
+    ? "Utförd"
+    : challenge
+      ? `Vecka ${challenge.week}`
+      : `Ingen utmaning vecka ${state.challengePeriod?.week || ""}`.trim();
 }
 
 function renderProgress() {
@@ -266,16 +337,19 @@ function openModule(slug, updateHash = true) {
   if (!module) return;
 
   state.activeSlug = slug;
+  state.activeChallengeSlug = "";
   elements.topbar.hidden = true;
   elements.overview.hidden = true;
   elements.categoryGrid.hidden = true;
   elements.reader.hidden = false;
+  elements.challengeReader.hidden = true;
   elements.readerTitle.textContent = module.title;
   elements.readerMeta.textContent = `${levelInfo[module.level] || `Nivå ${module.level}`} · ${categoryInfo[module.category]?.title || module.category} · ${formatDuration(module.minutes)}`;
   elements.readerTags.innerHTML = module.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
   elements.readerBody.innerHTML = markdownToHtml(module.content);
   updateCompleteButton();
   elements.homeButton.classList.remove("is-active");
+  renderChallengeButton();
   renderNav();
   closeMenu();
 
@@ -286,14 +360,61 @@ function openModule(slug, updateHash = true) {
 
 function openHome() {
   state.activeSlug = "";
+  state.activeChallengeSlug = "";
   elements.topbar.hidden = false;
   elements.overview.hidden = false;
   elements.categoryGrid.hidden = false;
   elements.reader.hidden = true;
+  elements.challengeReader.hidden = true;
   elements.homeButton.classList.add("is-active");
+  renderChallengeButton();
   history.replaceState(null, "", window.location.pathname);
   renderNav();
   closeMenu();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openChallenge(updateHash = true) {
+  const challenge = getCurrentChallenge();
+  const slug = getCurrentChallengeSlug();
+
+  state.activeSlug = "";
+  state.activeChallengeSlug = slug;
+  elements.topbar.hidden = true;
+  elements.overview.hidden = true;
+  elements.categoryGrid.hidden = true;
+  elements.reader.hidden = true;
+  elements.challengeReader.hidden = false;
+  elements.homeButton.classList.remove("is-active");
+
+  if (challenge) {
+    elements.challengeTitle.textContent = challenge.title || "Veckans utmaning";
+    elements.challengeMeta.textContent = challenge.estimated_time
+      ? `Vecka ${challenge.week} · ${challenge.estimated_time}`
+      : `Vecka ${challenge.week}`;
+    elements.challengeTags.innerHTML = challenge.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+    elements.challengeBody.innerHTML = markdownToHtml(challenge.content);
+    elements.challengeCompleteButton.hidden = false;
+  } else {
+    elements.challengeTitle.textContent = "Ingen utmaning den här veckan";
+    elements.challengeMeta.textContent = state.challengePeriod
+      ? `Vecka ${state.challengePeriod.week}`
+      : "Veckans utmaning";
+    elements.challengeTags.innerHTML = "";
+    elements.challengeBody.innerHTML = `
+      <p>Det finns ingen utmaning publicerad för den här veckan.</p>
+      <p>Kom tillbaka nästa vecka.</p>
+    `;
+    elements.challengeCompleteButton.hidden = true;
+  }
+
+  updateChallengeCompleteButton();
+  renderChallengeButton();
+  renderNav();
+  closeMenu();
+
+  if (updateHash) history.replaceState(null, "", "#veckans-utmaning");
+  elements.challengeReader.focus({ preventScroll: true });
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -303,6 +424,21 @@ function updateCompleteButton() {
     button.classList.toggle("is-done", done);
     button.textContent = done ? "Genomförd" : "Markera som genomförd";
   });
+}
+
+function updateChallengeCompleteButton() {
+  const slug = state.activeChallengeSlug || getCurrentChallengeSlug();
+  const done = state.completedChallenges.has(slug);
+  elements.challengeCompleteButton.classList.toggle("is-done", done);
+  elements.challengeCompleteButton.textContent = done ? "Utförd" : "Markera som utförd";
+}
+
+function getCurrentChallenge() {
+  return state.challenge;
+}
+
+function getCurrentChallengeSlug() {
+  return state.challenge?.slug || `vecka-${state.challengePeriod?.weekPadded || "aktuell"}`;
 }
 
 function filteredModules() {
@@ -335,8 +471,74 @@ function groupByCategory(modules) {
   }, {});
 }
 
+function getChallengeCandidatePaths(week) {
+  const paddedWeek = String(week).padStart(2, "0");
+  return [
+    `assets/veckans-utmaning/vecka-${paddedWeek}.md`,
+    `assets/veckans-utmaning/vecka-${week}.md`
+  ];
+}
+
+function getActiveChallengePeriod(date = new Date()) {
+  const parts = getStockholmDateParts(date);
+  let activeDate = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+
+  if (parts.weekday === 1 && parts.hour < 6) {
+    activeDate = new Date(activeDate.getTime() - 24 * 60 * 60 * 1000);
+  }
+
+  const iso = getIsoWeek(activeDate);
+  return {
+    ...iso,
+    weekPadded: String(iso.week).padStart(2, "0")
+  };
+}
+
+function getStockholmDateParts(date) {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Stockholm",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(date).reduce((result, part) => {
+    result[part.type] = part.value;
+    return result;
+  }, {});
+
+  const year = Number(parts.year);
+  const month = Number(parts.month);
+  const day = Number(parts.day);
+  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay() || 7;
+
+  return {
+    year,
+    month,
+    day,
+    hour: Number(parts.hour),
+    weekday
+  };
+}
+
+function getIsoWeek(date) {
+  const target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = target.getUTCDay() || 7;
+  target.setUTCDate(target.getUTCDate() + 4 - day);
+
+  const year = target.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(year, 0, 1));
+  const week = Math.ceil((((target - yearStart) / 86400000) + 1) / 7);
+
+  return { year, week };
+}
+
 function persistProgress() {
   localStorage.setItem("ai-academy-progress", JSON.stringify([...state.completed]));
+}
+
+function persistChallengeProgress() {
+  localStorage.setItem("ai-academy-challenge-progress", JSON.stringify([...state.completedChallenges]));
 }
 
 function formatDuration(minutes) {

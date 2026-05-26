@@ -41,12 +41,20 @@ Appen renderar:
 - modulnavigation
 - kategorikort på startsidan
 - läsvy för vald modul
+- vy för veckans utmaning
 
 När en modul öppnas:
 - startsidans block döljs
 - modulens metadata visas överst
 - markdowninnehållet renderas till HTML
 - URL-hashen uppdateras till modulens slug
+
+När veckans utmaning öppnas:
+- startsidans block och modulläsaren döljs
+- appen försöker läsa `assets/veckans-utmaning/vecka-XX.md` eller `assets/veckans-utmaning/vecka-X.md` för aktiv utmaningsvecka
+- aktiv vecka byter måndag kl. 06.00 svensk tid
+- annars visas ett meddelande om att det saknas utmaning den här veckan
+- utförd-status sparas separat från modulprogress
 
 ## Markdown och frontmatter
 

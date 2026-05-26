@@ -29,7 +29,12 @@
 
         <button id="homeButton" class="home-button is-active" type="button">
           <span class="home-button-title">Information och översikt</span>
-          <span class="home-button-meta">Starta här</span>
+          <span class="home-button-meta">Se syfte, upplägg och din progress</span>
+        </button>
+
+        <button id="challengeButton" class="challenge-button" type="button">
+          <span class="challenge-button-title">Veckans utmaning</span>
+          <span id="challengeButtonMeta" class="challenge-button-meta">Praktiskt moment</span>
         </button>
 
         <label class="search-field">
@@ -105,6 +110,18 @@
           <div class="reader-footer">
             <button id="completeButtonBottom" class="primary-button" type="button">Markera som genomförd</button>
           </div>
+        </article>
+
+        <article id="challengeReader" class="reader challenge-reader" tabindex="-1" hidden>
+          <div class="reader-header">
+            <div>
+              <p id="challengeMeta" class="eyebrow">Veckans utmaning</p>
+              <h2 id="challengeTitle">Veckans utmaning</h2>
+            </div>
+            <button id="challengeCompleteButton" class="primary-button" type="button">Markera som utförd</button>
+          </div>
+          <div id="challengeTags" class="tag-row"></div>
+          <div id="challengeBody" class="markdown-body"></div>
         </article>
       </main>
     </div>
